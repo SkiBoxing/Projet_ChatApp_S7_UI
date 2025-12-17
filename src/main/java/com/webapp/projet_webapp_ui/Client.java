@@ -67,6 +67,7 @@ public class Client extends Application {
                 In.close();
                 Out.close();
                 client.close();
+                client = null;
             }
             catch (IOException e) {
                 this.errorPopUp(e.getMessage());

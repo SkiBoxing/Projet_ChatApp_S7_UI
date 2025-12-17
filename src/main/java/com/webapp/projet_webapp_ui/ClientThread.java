@@ -2,6 +2,7 @@ package com.webapp.projet_webapp_ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,16 +14,14 @@ public class ClientThread extends Thread {
     private DataInputStream is;
     private DataOutputStream os;
 
-    private String pseudo;
-
     @FXML
     private TextArea messagesTextArea;
 
-    public ClientThread(Socket clientSocket, TextArea textArea) {
+    public ClientThread(Socket clientSocket, TextArea messagesTextArea) {
         try {
             // Reception du socket du client
             this.clientSocket = clientSocket;
-            this.messagesTextArea = textArea;
+            this.messagesTextArea = messagesTextArea;
 
             // Récuperation des Data Stream pour le client lié au socket
             this.is = new DataInputStream(clientSocket.getInputStream());
@@ -30,7 +29,6 @@ public class ClientThread extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
