@@ -10,6 +10,7 @@ module com.webapp.projet_webapp_ui {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires javafx.graphics;
 
     opens com.webapp.projet_webapp_ui to javafx.fxml;
     exports com.webapp.projet_webapp_ui;

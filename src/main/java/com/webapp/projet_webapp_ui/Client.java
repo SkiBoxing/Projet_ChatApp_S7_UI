@@ -3,15 +3,17 @@ package com.webapp.projet_webapp_ui;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
+
+import javafx.application.Application;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
-import static java.lang.Math.floor;
-
-public class Client {
+public class Client extends Application {
     DataOutputStream Out;
     DataInputStream In;
     Socket client;
@@ -25,8 +27,17 @@ public class Client {
     @FXML
     private TextArea messagesTextArea;
 
+    @Override
+    public void start(Stage stage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(Client.class.getResource("V1.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Demo");
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public void connect() {
-        if (!pseudoTextField.getText().equals("")) {
+        if (!pseudoTextField.getText().isEmpty()) {
             try {
                 this.client = new Socket("localhost", 7777);
 
@@ -44,21 +55,8 @@ public class Client {
                 this.sendMessage(pseudo);
 
             }
-            catch (UnknownHostException e) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText("ERROR");
-                alert.setContentText(e.getMessage());
-
-                alert.showAndWait();
-            }
             catch (Exception e) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Information");
-                alert.setHeaderText("ERROR");
-                alert.setContentText(e.getMessage());
-
-                alert.showAndWait();
+                this.errorPopUp(e.getMessage());
             }
         }
     }
@@ -70,7 +68,9 @@ public class Client {
                 Out.close();
                 client.close();
             }
-            catch (IOException e) {}
+            catch (IOException e) {
+                this.errorPopUp(e.getMessage());
+            }
         }
     }
 
@@ -80,7 +80,9 @@ public class Client {
                 Out.writeUTF(msg);
                 Out.flush();
             }
-            catch (IOException e) {}
+            catch (IOException e) {
+                this.errorPopUp(e.getMessage());
+            }
         }
     }
 
@@ -98,5 +100,13 @@ public class Client {
         if (client.isConnected()) {
             this.sendMessage(messageTextField.getText());
         }
+    }
+
+    public void errorPopUp(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setContentText(message);
+
+        alert.showAndWait();
     }
 }
