@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class ClientThread extends Thread {
     private Socket clientSocket;
@@ -14,14 +15,13 @@ public class ClientThread extends Thread {
     private DataInputStream is;
     private DataOutputStream os;
 
-    @FXML
-    private TextArea messagesTextArea;
+    private Consumer<String> messageHandler;
 
-    public ClientThread(Socket clientSocket, TextArea messagesTextArea) {
+    public ClientThread(Socket clientSocket, Consumer<String> messageHandler) {
         try {
             // Reception du socket du client
             this.clientSocket = clientSocket;
-            this.messagesTextArea = messagesTextArea;
+            this.messageHandler = messageHandler;
 
             // Récuperation des Data Stream pour le client lié au socket
             this.is = new DataInputStream(clientSocket.getInputStream());
@@ -38,8 +38,7 @@ public class ClientThread extends Thread {
         try {
             while (true) {
                 String message = is.readUTF();
-
-                messagesTextArea.appendText(message + "\n");
+                messageHandler.accept(message);
             }
         } catch (IOException e) {
             System.out.println("Client déconnecté : " + clientSocket.getInetAddress());
